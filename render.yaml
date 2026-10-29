@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: tamil-nadu-soil-crop-atlas
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app
+    healthCheckPath: /healthz
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.8
