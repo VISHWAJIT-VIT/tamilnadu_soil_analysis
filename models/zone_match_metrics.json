@@ -1,0 +1,424 @@
+{
+  "target": "Zone_Match",
+  "classes": [
+    "No",
+    "Yes"
+  ],
+  "target_counts": {
+    "No": 1005,
+    "Yes": 857
+  },
+  "rows": 1862,
+  "districts": 38,
+  "crops": 49,
+  "validation": "Five-fold GroupKFold by District. Every validation fold contains districts excluded from that fold's training data.",
+  "folds": 5,
+  "features": [
+    "pH_Mean",
+    "EC_dSm",
+    "OC_Pct",
+    "N_kg_ac",
+    "P_kg_ac",
+    "K_kg_ac",
+    "S_Sufficient_Pct",
+    "Zn_Sufficient_Pct",
+    "Fe_Sufficient_Pct",
+    "Cu_Sufficient_Pct",
+    "Mn_Sufficient_Pct",
+    "B_Sufficient_Pct",
+    "Mean_Annual_Rainfall_mm",
+    "SW_Monsoon_Jun_Sep_mm",
+    "NE_Monsoon_Oct_Dec_mm",
+    "Soil_pH_Min",
+    "Soil_pH_Max",
+    "Water_Min_mm",
+    "Water_Max_mm",
+    "Duration_Min_Days",
+    "Duration_Max_Days",
+    "Temp_Min_C",
+    "Temp_Max_C",
+    "Humidity_Min_Pct",
+    "Humidity_Max_Pct",
+    "Agro_Climatic_Zone",
+    "Major_Soil_Type",
+    "Crop_Name",
+    "Crop_Category",
+    "Required_Soil_Type",
+    "Water_Source",
+    "Primary_TN_Seasons"
+  ],
+  "excluded_fields": [
+    "District",
+    "District_Named_In_Crop_Zones",
+    "Key_Agro_Climatic_Zones",
+    "Zone_Match"
+  ],
+  "best_model": "Histogram Gradient Boosting",
+  "results": {
+    "Most-frequent baseline": {
+      "accuracy": 0.5397,
+      "balanced_accuracy": 0.5,
+      "macro_f1": 0.3505,
+      "confusion_matrix": [
+        [
+          1005,
+          0
+        ],
+        [
+          857,
+          0
+        ]
+      ],
+      "classification_report": {
+        "No": {
+          "precision": 0.5397422126745435,
+          "recall": 1.0,
+          "f1-score": 0.7010812696198117,
+          "support": 1005.0
+        },
+        "Yes": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1-score": 0.0,
+          "support": 857.0
+        },
+        "accuracy": 0.5397422126745435,
+        "macro avg": {
+          "precision": 0.26987110633727174,
+          "recall": 0.5,
+          "f1-score": 0.3505406348099058,
+          "support": 1862.0
+        },
+        "weighted avg": {
+          "precision": 0.2913216561428121,
+          "recall": 0.5397422126745435,
+          "f1-score": 0.3784031557292754,
+          "support": 1862.0
+        }
+      },
+      "fold_mean": {
+        "accuracy": 0.5433,
+        "balanced_accuracy": 0.5,
+        "macro_f1": 0.3507
+      },
+      "fold_std": {
+        "accuracy": 0.0764,
+        "balanced_accuracy": 0.0,
+        "macro_f1": 0.0325
+      }
+    },
+    "Logistic Regression": {
+      "accuracy": 0.7304,
+      "balanced_accuracy": 0.7291,
+      "macro_f1": 0.7289,
+      "confusion_matrix": [
+        [
+          749,
+          256
+        ],
+        [
+          246,
+          611
+        ]
+      ],
+      "classification_report": {
+        "No": {
+          "precision": 0.7527638190954774,
+          "recall": 0.745273631840796,
+          "f1-score": 0.749,
+          "support": 1005.0
+        },
+        "Yes": {
+          "precision": 0.7047289504036909,
+          "recall": 0.7129521586931156,
+          "f1-score": 0.7088167053364269,
+          "support": 857.0
+        },
+        "accuracy": 0.7303974221267454,
+        "macro avg": {
+          "precision": 0.7287463847495841,
+          "recall": 0.7291128952669558,
+          "f1-score": 0.7289083526682134,
+          "support": 1862.0
+        },
+        "weighted avg": {
+          "precision": 0.7306553967169268,
+          "recall": 0.7303974221267454,
+          "f1-score": 0.730505325710697,
+          "support": 1862.0
+        }
+      },
+      "fold_mean": {
+        "accuracy": 0.7312,
+        "balanced_accuracy": 0.7149,
+        "macro_f1": 0.7171
+      },
+      "fold_std": {
+        "accuracy": 0.0486,
+        "balanced_accuracy": 0.0559,
+        "macro_f1": 0.056
+      }
+    },
+    "Decision Tree": {
+      "accuracy": 0.7589,
+      "balanced_accuracy": 0.762,
+      "macro_f1": 0.7588,
+      "confusion_matrix": [
+        [
+          726,
+          279
+        ],
+        [
+          170,
+          687
+        ]
+      ],
+      "classification_report": {
+        "No": {
+          "precision": 0.8102678571428571,
+          "recall": 0.7223880597014926,
+          "f1-score": 0.7638085218306154,
+          "support": 1005.0
+        },
+        "Yes": {
+          "precision": 0.7111801242236024,
+          "recall": 0.8016336056009334,
+          "f1-score": 0.7537026878771256,
+          "support": 857.0
+        },
+        "accuracy": 0.7588614393125671,
+        "macro avg": {
+          "precision": 0.7607239906832297,
+          "recall": 0.7620108326512129,
+          "f1-score": 0.7587556048538705,
+          "support": 1862.0
+        },
+        "weighted avg": {
+          "precision": 0.7646619564383452,
+          "recall": 0.7588614393125671,
+          "f1-score": 0.7591572330561037,
+          "support": 1862.0
+        }
+      },
+      "fold_mean": {
+        "accuracy": 0.7572,
+        "balanced_accuracy": 0.7464,
+        "macro_f1": 0.7458
+      },
+      "fold_std": {
+        "accuracy": 0.0501,
+        "balanced_accuracy": 0.0569,
+        "macro_f1": 0.0572
+      }
+    },
+    "Random Forest": {
+      "accuracy": 0.8985,
+      "balanced_accuracy": 0.8976,
+      "macro_f1": 0.8978,
+      "confusion_matrix": [
+        [
+          914,
+          91
+        ],
+        [
+          98,
+          759
+        ]
+      ],
+      "classification_report": {
+        "No": {
+          "precision": 0.9031620553359684,
+          "recall": 0.909452736318408,
+          "f1-score": 0.9062964799206743,
+          "support": 1005.0
+        },
+        "Yes": {
+          "precision": 0.8929411764705882,
+          "recall": 0.8856476079346558,
+          "f1-score": 0.8892794376098418,
+          "support": 857.0
+        },
+        "accuracy": 0.8984962406015038,
+        "macro avg": {
+          "precision": 0.8980516159032783,
+          "recall": 0.8975501721265319,
+          "f1-score": 0.8977879587652581,
+          "support": 1862.0
+        },
+        "weighted avg": {
+          "precision": 0.898457816244867,
+          "recall": 0.8984962406015038,
+          "f1-score": 0.8984642536798669,
+          "support": 1862.0
+        }
+      },
+      "fold_mean": {
+        "accuracy": 0.8972,
+        "balanced_accuracy": 0.8911,
+        "macro_f1": 0.8925
+      },
+      "fold_std": {
+        "accuracy": 0.077,
+        "balanced_accuracy": 0.0837,
+        "macro_f1": 0.0838
+      }
+    },
+    "Extra Trees": {
+      "accuracy": 0.9705,
+      "balanced_accuracy": 0.9702,
+      "macro_f1": 0.9703,
+      "confusion_matrix": [
+        [
+          978,
+          27
+        ],
+        [
+          28,
+          829
+        ]
+      ],
+      "classification_report": {
+        "No": {
+          "precision": 0.9721669980119284,
+          "recall": 0.9731343283582089,
+          "f1-score": 0.9726504226752859,
+          "support": 1005.0
+        },
+        "Yes": {
+          "precision": 0.9684579439252337,
+          "recall": 0.9673278879813302,
+          "f1-score": 0.9678925861062464,
+          "support": 857.0
+        },
+        "accuracy": 0.9704618689581096,
+        "macro avg": {
+          "precision": 0.9703124709685811,
+          "recall": 0.9702311081697695,
+          "f1-score": 0.9702715043907661,
+          "support": 1862.0
+        },
+        "weighted avg": {
+          "precision": 0.9704598769849158,
+          "recall": 0.9704618689581096,
+          "f1-score": 0.9704605913435636,
+          "support": 1862.0
+        }
+      },
+      "fold_mean": {
+        "accuracy": 0.9698,
+        "balanced_accuracy": 0.9696,
+        "macro_f1": 0.9686
+      },
+      "fold_std": {
+        "accuracy": 0.0348,
+        "balanced_accuracy": 0.0346,
+        "macro_f1": 0.0372
+      }
+    },
+    "Histogram Gradient Boosting": {
+      "accuracy": 0.9753,
+      "balanced_accuracy": 0.9745,
+      "macro_f1": 0.9751,
+      "confusion_matrix": [
+        [
+          990,
+          15
+        ],
+        [
+          31,
+          826
+        ]
+      ],
+      "classification_report": {
+        "No": {
+          "precision": 0.9696376101860921,
+          "recall": 0.9850746268656716,
+          "f1-score": 0.9772951628825272,
+          "support": 1005.0
+        },
+        "Yes": {
+          "precision": 0.9821640903686087,
+          "recall": 0.9638273045507585,
+          "f1-score": 0.9729093050647821,
+          "support": 857.0
+        },
+        "accuracy": 0.9752953813104189,
+        "macro avg": {
+          "precision": 0.9759008502773504,
+          "recall": 0.974450965708215,
+          "f1-score": 0.9751022339736546,
+          "support": 1862.0
+        },
+        "weighted avg": {
+          "precision": 0.9754030202378734,
+          "recall": 0.9752953813104189,
+          "f1-score": 0.9752765376678078,
+          "support": 1862.0
+        }
+      },
+      "fold_mean": {
+        "accuracy": 0.9757,
+        "balanced_accuracy": 0.9753,
+        "macro_f1": 0.9751
+      },
+      "fold_std": {
+        "accuracy": 0.0225,
+        "balanced_accuracy": 0.0233,
+        "macro_f1": 0.0229
+      }
+    }
+  },
+  "feature_importance": [
+    {
+      "feature": "SW_Monsoon_Jun_Sep_mm",
+      "importance": 0.13861
+    },
+    {
+      "feature": "Temp_Min_C",
+      "importance": 0.12909
+    },
+    {
+      "feature": "Agro_Climatic_Zone",
+      "importance": 0.05964
+    },
+    {
+      "feature": "NE_Monsoon_Oct_Dec_mm",
+      "importance": 0.05415
+    },
+    {
+      "feature": "Crop_Name",
+      "importance": 0.05235
+    },
+    {
+      "feature": "Soil_pH_Min",
+      "importance": 0.04057
+    },
+    {
+      "feature": "Temp_Max_C",
+      "importance": 0.03116
+    },
+    {
+      "feature": "Mean_Annual_Rainfall_mm",
+      "importance": 0.0253
+    },
+    {
+      "feature": "Duration_Min_Days",
+      "importance": 0.02104
+    },
+    {
+      "feature": "Water_Source",
+      "importance": 0.01987
+    },
+    {
+      "feature": "Humidity_Min_Pct",
+      "importance": 0.01816
+    },
+    {
+      "feature": "Primary_TN_Seasons",
+      "importance": 0.01781
+    }
+  ],
+  "feature_importance_method": "Mean permutation importance on held-out district folds, measured as macro-F1 change when a feature is shuffled.",
+  "interpretation": "This model predicts the dataset's existing Yes/No Zone_Match flag. It does not predict observed crop success or yield.",
+  "seed": 2026
+}

@@ -16,6 +16,7 @@ import matplotlib.pyplot as plt
 from matplotlib import cm, colors
 import numpy as np
 import pandas as pd
+import joblib
 from flask import Flask, Response, abort, jsonify, request, send_file
 
 BASE = Path(__file__).resolve().parent
@@ -23,6 +24,8 @@ DATA_DIR = BASE / "data"
 HTML_FILE = BASE / "templates" / "index.html"
 CSV_FILE = DATA_DIR / "master_dataset.csv"
 GEO_FILE = DATA_DIR / "tamil-nadu-districts.geojson"
+ML_METRICS_FILE = BASE / "models" / "zone_match_metrics.json"
+ML_MODEL_FILE = BASE / "models" / "zone_match_classifier.joblib"
 
 app = Flask(__name__)
 DF = pd.read_csv(CSV_FILE)
@@ -39,6 +42,9 @@ NUMERIC = [c for c in DF.select_dtypes(include="number").columns if c != "Distri
 CATEGORICAL = [c for c in DF.columns if c not in NUMERIC]
 with GEO_FILE.open(encoding="utf-8") as _f:
     GEOJSON = json.load(_f)
+with ML_METRICS_FILE.open(encoding="utf-8") as _f:
+    ML_METRICS = json.load(_f)
+ML_MODEL = joblib.load(ML_MODEL_FILE)
 BOUNDARY_ALIASES = {
     "Kanniyakumari": "Kanyakumari", "Sivaganga": "Sivagangai",
     "Thiruvarur": "Tiruvarur", "Tirupathur": "Tirupattur",
@@ -401,7 +407,8 @@ def meta():
     ranges = {k: [float(SUMMARY[k].min()), float(SUMMARY[k].max())] for k in map_metrics if k in SUMMARY}
     return jsonify({"districts": DISTRICTS, "columns": DF.columns.tolist(), "numeric": NUMERIC,
                     "categorical": CATEGORICAL, "map_metrics": map_metrics, "map_ranges": ranges,
-                    "rows": len(DF), "district_count": len(DISTRICTS)})
+                    "rows": len(DF), "district_count": len(DISTRICTS),
+                    "crops": sorted(DF["Crop_Name"].dropna().unique().tolist(), key=str.casefold)})
 
 
 @app.get("/api/profile/<path:district>")
@@ -439,6 +446,64 @@ def eda_stats():
                       "q1": py_value(series.quantile(.25)), "median": py_value(series.median()),
                       "q3": py_value(series.quantile(.75)), "max": py_value(series.max())})
     return jsonify({"scope": scope, "rows": len(pop), "stats": stats})
+
+
+@app.get("/api/ml/metrics")
+def ml_metrics():
+    return jsonify(ML_METRICS)
+
+
+@app.get("/api/ml/predict")
+def ml_predict():
+    district = district_or_404(request.args.get("district", DISTRICTS[0]))
+    crop = request.args.get("crop", "")
+    sample = DF[
+        (DF["District"] == district)
+        & (DF["Crop_Name"].astype(str).str.casefold() == crop.casefold())
+    ]
+    if sample.empty:
+        abort(404, description="No source record for this district and crop")
+    feature_columns = ML_METRICS["features"]
+    x = sample[feature_columns]
+    prediction = str(ML_MODEL.predict(x)[0])
+    probabilities = ML_MODEL.predict_proba(x)[0]
+    probability_map = {str(label): round(float(prob), 4) for label, prob in zip(ML_MODEL.classes_, probabilities)}
+    row = sample.iloc[0]
+    return jsonify({
+        "district": district, "crop": str(row["Crop_Name"]),
+        "predicted_zone_match": prediction, "source_zone_match": str(row["Zone_Match"]),
+        "probabilities": probability_map,
+        "agro_climatic_zone": py_value(row.get("Agro_Climatic_Zone")),
+        "major_soil_type": py_value(row.get("Major_Soil_Type")),
+        "soil_ph": py_value(row.get("pH_Mean")),
+        "annual_rainfall_mm": py_value(row.get("Mean_Annual_Rainfall_mm")),
+        "crop_category": py_value(row.get("Crop_Category")),
+        "required_soil_type": py_value(row.get("Required_Soil_Type")),
+        "crop_ph_min": py_value(row.get("Soil_pH_Min")),
+        "crop_ph_max": py_value(row.get("Soil_pH_Max")),
+        "crop_water_min_mm": py_value(row.get("Water_Min_mm")),
+        "crop_water_max_mm": py_value(row.get("Water_Max_mm")),
+        "crop_duration_min_days": py_value(row.get("Duration_Min_Days")),
+        "crop_duration_max_days": py_value(row.get("Duration_Max_Days")),
+        "primary_seasons": py_value(row.get("Primary_TN_Seasons")),
+        "sowing_to_harvest_window": py_value(row.get("Sowing_to_Harvest_Window")),
+        "district_named_in_crop_zones": py_value(row.get("District_Named_In_Crop_Zones")),
+        "key_agro_climatic_zones": py_value(row.get("Key_Agro_Climatic_Zones")),
+        "notice": ML_METRICS["interpretation"],
+    })
+
+@app.get("/api/ml/feature-importance.png")
+def ml_feature_importance():
+    items = list(reversed(ML_METRICS["feature_importance"][:10]))
+    with MATPLOTLIB_LOCK:
+        fig, ax = plt.subplots(figsize=(8.2, 4.2))
+        labels = [item["feature"].replace("_", " ") for item in items]
+        values = [item["importance"] for item in items]
+        ax.barh(labels, values, color=GREEN)
+        ax.set_xlabel("Permutation importance · macro-F1 change")
+        style_title(ax, f"Top inputs · {ML_METRICS['best_model']}")
+        png = finish_figure(fig)
+    return send_file(png, mimetype="image/png", max_age=0)
 
 
 @app.get("/api/map.svg")
